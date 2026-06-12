@@ -260,67 +260,166 @@ const testimonials = [
   }
 ];
 
-const uncomfortableQuestions = [
-  {
-    phase: "Agent behavior",
-    question: "에이전트가 당신의 승인 없이 이메일, 메시지, 일정 확정, 파일 공유 같은 외부 행동을 한 적이 있다."
+const FAILURE_MODE_META = {
+  ambiguousDelegation: {
+    title: "너무 많은 것을 알아서 결정하는 에이전트",
+    riskId: "ambiguous-delegation",
+    failureText:
+      "에이전트가 사용자의 모호한 지시를 스스로 해석해, 의도보다 더 넓은 행동을 수행하는 경향이 감지됩니다."
   },
-  {
-    phase: "Agent behavior",
-    question: "에이전트가 내 제안이나 판단에 대해 필요한 반대 의견을 제시하지 않고 쉽게 동의한다고 느낀 적이 있다."
+  planningAction: {
+    title: "문제를 해결하려다 더 큰 문제를 만드는 에이전트",
+    riskId: "planning-action",
+    failureText:
+      "에이전트가 목표는 이해했지만, 실행 과정에서 원래 문제보다 더 큰 문제를 만들어내는 경향이 감지됩니다."
   },
-  {
-    phase: "Agent behavior",
-    question: "에이전트가 해고, 이별, 계약 종료, 거절처럼 명확해야 하는 메시지를 지나치게 부드럽거나 애매하게 만든 적이 있다."
+  permissionCollapse: {
+    title: "허락받지 않고 행동하는 에이전트",
+    riskId: "permission-tool",
+    failureText:
+      "에이전트가 승인 없이 이메일 발송, 일정 확정, 파일 공유 같은 외부 행동을 수행하는 경향이 감지됩니다."
   },
-  {
-    phase: "Delegation pattern",
-    question: "나는 에이전트에게 ‘알아서 해줘’, ‘내가 신경 안 쓰게 해줘’, ‘적당히 처리해줘’라고 지시한 적이 있다."
+  verificationFailure: {
+    title: "끝났다고 말하지만 확인하지 않는 에이전트",
+    riskId: "verification",
+    failureText:
+      "에이전트가 작업을 완료했다고 보고하지만, 실제 결과는 검증하지 않는 경향이 감지됩니다."
   },
-  {
-    phase: "Delegation pattern",
-    question: "나는 에이전트에게 일을 맡길 때, 어디까지 허용되고 어디서부터 승인이 필요한지 구체적으로 정하지 않는 편이다."
+  memoryFailure: {
+    title: "중요한 맥락을 잊어버리는 에이전트",
+    riskId: "memory-context",
+    failureText:
+      "에이전트가 기억해야 할 정보는 잊고, 다른 상황의 규칙을 잘못 적용하는 경향이 감지됩니다.",
+    guardrails: ["Data Sharing Alert", "Calendar Control"]
   },
-  {
-    phase: "Communication pattern",
-    question: "나는 ‘기분 상하지 않게’, ‘최대한 부드럽게’, ‘좋게 좋게 말해줘’ 같은 표현을 자주 사용한다."
+  workflowDependency: {
+    title: "작은 실수가 연쇄적으로 번지는 에이전트",
+    riskId: "workflow-multiagent",
+    failureText:
+      "하나의 작은 오류가 다른 에이전트와 자동화 과정으로 이어져 문제가 커지는 경향이 감지됩니다."
   },
-  {
-    phase: "Communication pattern",
-    question: "나는 갈등이 생길 수 있는 상황에서 결론을 직접 말하기보다, 에이전트가 완곡하게 정리해주기를 기대한 적이 있다."
-  },
-  {
-    phase: "Feedback pattern",
-    question: "에이전트가 리스크나 반대 의견을 제시했을 때, 나는 그 답변이 불편해서 더 긍정적이거나 부드러운 답변을 다시 요구한 적이 있다."
-  },
-  {
-    phase: "Feedback pattern",
-    question: "에이전트가 내 기분을 상하게 하지 않는 답변을 할수록 더 만족스럽다고 느끼는 편이다."
-  },
-  {
-    phase: "Responsibility boundary",
-    question: "나는 결정의 책임을 명확히 지기 어려운 상황에서, 에이전트가 대신 판단하거나 메시지를 보내주기를 기대한 적이 있다."
-  },
-  {
-    phase: "Responsibility boundary",
-    question: "에이전트가 실행한 행동이 문제가 되었을 때, 그것이 내 지시 방식과도 관련 있을 수 있다고 생각해본 적이 적다."
-  },
-  {
-    phase: "Care and control",
-    question: "나는 ‘위험한 건 막아줘’, ‘해로운 건 차단해줘’, ‘안전하게 해줘’ 같은 포괄적인 지시를 구체적 기준 없이 사용한 적이 있다."
-  },
-  {
-    phase: "Care and control",
-    question: "나는 보호나 안전을 이유로 에이전트가 사람, 정보, 활동을 적극적으로 제한해주기를 기대한 적이 있다."
-  },
-  {
-    phase: "Memory and preference",
-    question: "나는 에이전트가 나의 일시적인 감정이나 선호를 장기적인 행동 규칙으로 기억할 가능성을 충분히 고려하지 않는 편이다."
-  },
-  {
-    phase: "Memory and preference",
-    question: "에이전트가 나를 ‘잘 안다’고 느낄수록, 그 에이전트가 나의 회피나 불안까지 학습했을 가능성은 덜 생각하게 된다."
+  affectiveDelegation: {
+    title: "내 대신 관계를 관리하는 에이전트",
+    riskId: "affective-relational",
+    failureText:
+      "에이전트가 단순히 메시지를 다듬는 수준을 넘어, 사용자의 감정적 부담이나 인간관계 판단까지 대신 처리하려는 경향이 감지됩니다."
   }
+};
+
+const USER_PATTERN_META = {
+  conflictAvoidance: {
+    label: "갈등 회피형",
+    text: "명확한 결론이나 책임 있는 표현을 직접 정하기보다, 에이전트가 더 부드럽고 안전한 방식으로 대신 처리해주기를 기대하는 패턴이 보입니다."
+  },
+  overDelegation: {
+    label: "과잉 위임형",
+    text: "‘알아서 해줘’, ‘신경 안 쓰게 해줘’처럼 범위를 넓게 맡기고, 승인·확인·중단 기준은 구체적으로 정하지 않는 패턴이 보입니다."
+  },
+  lowVerification: {
+    label: "검증 생략형",
+    text: "중간 과정이나 실제 결과를 충분히 확인하지 않고, 완료 보고나 자동화 흐름을 그대로 믿는 패턴이 보입니다."
+  },
+  boundaryClarity: {
+    label: "기준 부재형",
+    text: "무엇을 해도 되고 무엇은 하면 안 되는지, 어떤 맥락은 분리해야 하는지를 명확히 정하지 않는 패턴이 보입니다."
+  }
+};
+
+const FAILURE_MODE_KEYS = Object.keys(FAILURE_MODE_META);
+const USER_PATTERN_KEYS = Object.keys(USER_PATTERN_META);
+
+function buildModeQuestions(modeKey, agentQuestion, delegationQuestion, userQuestion, delegationPatterns, userPatterns) {
+  return [
+    {
+      modeKey,
+      mode: FAILURE_MODE_META[modeKey].title,
+      phase: "Agent behavior",
+      question: agentQuestion,
+      weights: {
+        failureModes: { [modeKey]: 3 },
+        userPatterns: {}
+      }
+    },
+    {
+      modeKey,
+      mode: FAILURE_MODE_META[modeKey].title,
+      phase: "Delegation pattern",
+      question: delegationQuestion,
+      weights: {
+        failureModes: { [modeKey]: 2 },
+        userPatterns: delegationPatterns
+      }
+    },
+    {
+      modeKey,
+      mode: FAILURE_MODE_META[modeKey].title,
+      phase: "User pattern",
+      question: userQuestion,
+      weights: {
+        failureModes: { [modeKey]: 2 },
+        userPatterns: userPatterns
+      }
+    }
+  ];
+}
+
+const uncomfortableQuestions = [
+  ...buildModeQuestions(
+    "ambiguousDelegation",
+    "에이전트가 내가 의도한 범위보다 더 넓게 해석해 이메일 정리, 파일 삭제, 메시지 전송 같은 행동을 한 적이 있다.",
+    "나는 에이전트에게 ‘알아서 해줘’, ‘적당히 처리해줘’, ‘내가 신경 안 쓰게 해줘’처럼 범위가 모호한 지시를 자주 한다.",
+    "나는 일을 맡길 때 무엇을 해도 되고, 무엇은 하면 안 되는지, 언제 멈춰야 하는지를 구체적으로 정하지 않는 편이다.",
+    { overDelegation: 3, boundaryClarity: 2 },
+    { overDelegation: 2, boundaryClarity: 3 }
+  ),
+  ...buildModeQuestions(
+    "planningAction",
+    "에이전트가 내 목표는 이해한 것처럼 보였지만, 실행 방식 때문에 오히려 더 큰 문제가 생긴 적이 있다.",
+    "나는 에이전트에게 목표만 말하고, 어떤 방식은 피해야 하는지나 언제 내 확인을 받아야 하는지는 잘 정하지 않는다.",
+    "나는 빨리 해결되는 것을 선호해서, 에이전트가 실행 전에 계획을 설명하거나 확인을 요청하면 답답하게 느낀 적이 있다.",
+    { overDelegation: 2, boundaryClarity: 2 },
+    { overDelegation: 2, boundaryClarity: 1 }
+  ),
+  ...buildModeQuestions(
+    "permissionCollapse",
+    "에이전트가 내 승인 없이 이메일 발송, 일정 확정, 파일 공유, 고객 응대 같은 외부 행동을 한 적이 있다.",
+    "나는 편의상 메일, 캘린더, 파일, 메시지 권한을 넓게 열어두고, 행동별 승인 기준은 따로 설정하지 않는 편이다.",
+    "에이전트가 대신 처리해주는 편리함 때문에, 실제 행동 전 승인 절차를 줄이고 싶다고 느낀 적이 있다.",
+    { overDelegation: 3 },
+    { overDelegation: 2, boundaryClarity: 1 }
+  ),
+  ...buildModeQuestions(
+    "verificationFailure",
+    "에이전트가 작업을 완료했다고 말했지만, 나중에 확인해보니 실제로는 제대로 끝나지 않은 적이 있다.",
+    "나는 에이전트에게 일을 맡긴 뒤 중간 과정이나 결과를 직접 확인하지 않고 완료 보고를 그대로 믿는 편이다.",
+    "나는 에이전트가 ‘완료했습니다’라고 말하면, 실제 결과를 검증하기보다 다음 일로 넘어가는 편이다.",
+    { lowVerification: 3 },
+    { lowVerification: 3 }
+  ),
+  ...buildModeQuestions(
+    "memoryFailure",
+    "에이전트가 이전 프로젝트나 다른 상황의 기준을 지금 상황에 잘못 적용한 적이 있다.",
+    "나는 에이전트에게 무엇을 기억해야 하고, 무엇은 잊어야 하며, 어떤 맥락은 분리해야 하는지 명확히 알려주지 않는 편이다.",
+    "에이전트가 나를 ‘잘 안다’고 느낄수록, 잘못된 기억이나 일시적 감정까지 행동 기준으로 삼을 가능성은 덜 생각하게 된다.",
+    { boundaryClarity: 2 },
+    { boundaryClarity: 2, lowVerification: 1 }
+  ),
+  ...buildModeQuestions(
+    "workflowDependency",
+    "하나의 에이전트가 만든 작은 오류가 다른 에이전트나 자동화 과정으로 이어져 문제가 커진 적이 있다.",
+    "나는 여러 에이전트나 자동화 도구를 연결해 쓰면서, 중간 결과를 검증하는 단계를 충분히 두지 않는 편이다.",
+    "자동화 흐름이 한 번 잘 작동하면, 그 뒤에도 계속 문제없이 작동할 것이라고 믿는 편이다.",
+    { lowVerification: 2, overDelegation: 1 },
+    { lowVerification: 2 }
+  ),
+  ...buildModeQuestions(
+    "affectiveDelegation",
+    "에이전트가 사과, 거절, 갈등 해결, 메시지 숨김처럼 인간관계에 영향을 주는 일을 대신 처리한 적이 있다.",
+    "나는 ‘기분 상하지 않게’, ‘좋게 좋게 말해줘’, ‘어색하지 않게 처리해줘’ 같은 표현을 자주 사용한다.",
+    "나는 불편한 대화나 책임져야 할 결정을 직접 마주하기보다, 에이전트가 부드럽게 대신 처리해주기를 기대한 적이 있다.",
+    { conflictAvoidance: 3 },
+    { conflictAvoidance: 3, overDelegation: 1 }
+  )
 ];
 
 const likertOptions = [
@@ -331,23 +430,139 @@ const likertOptions = [
   "자주 그렇다"
 ];
 
-const surveyResults = [
-  {
-    title: "Likely Agent Type",
-    value: "Ambiguity / Yes-Man Hybrid",
-    text: "에이전트는 갈등을 피하고, 사용자를 불편하게 만들지 않는 방향으로 과적응했을 가능성이 있습니다."
+function createScoreMap(keys) {
+  return Object.fromEntries(keys.map((key) => [key, 0]));
+}
+
+function createMaxScoreMap(questions, dimension) {
+  const maxScores = createScoreMap(dimension === "failureModes" ? FAILURE_MODE_KEYS : USER_PATTERN_KEYS);
+
+  questions.forEach((question) => {
+    Object.entries(question.weights[dimension] ?? {}).forEach(([key, weight]) => {
+      maxScores[key] += weight * 5;
+    });
+  });
+
+  return maxScores;
+}
+
+const failureModeMaxScores = createMaxScoreMap(uncomfortableQuestions, "failureModes");
+const userPatternMaxScores = createMaxScoreMap(uncomfortableQuestions, "userPatterns");
+
+function normalizeScoreMap(rawScores, maxScores) {
+  return Object.fromEntries(
+    Object.entries(rawScores).map(([key, score]) => [
+      key,
+      maxScores[key] ? Math.round((score / maxScores[key]) * 100) : 0
+    ])
+  );
+}
+
+function rankScoreMap(scoreMap) {
+  return Object.entries(scoreMap).sort((a, b) => b[1] - a[1]);
+}
+
+const diagnosisSummaries = {
+  ambiguousDelegation: {
+    headline: "Your agent may be filling in the blanks you never defined.",
+    lines: [
+      "당신의 에이전트는 주로 모호한 지시를 넓게 해석하는 경향을 보입니다.",
+      "핵심 문제는 에이전트 성능보다 위임 경계가 명확하지 않은 데 있습니다."
+    ]
   },
-  {
-    title: "Likely User Pattern",
-    value: "Conflict-Avoidant Delegator",
-    text: "명확한 결론과 책임 경계를 설정하기보다, 에이전트가 부드럽게 대신 처리해주기를 기대하는 패턴이 감지됩니다."
+  planningAction: {
+    headline: "Your agent may be solving fast in ways that create bigger problems.",
+    lines: [
+      "당신의 에이전트는 목표는 이해하지만, 실행 과정에서 범위를 넘어설 수 있습니다.",
+      "핵심 문제는 빠른 해결을 위해 중간 확인과 실행 한계가 충분히 정의되지 않은 데 있습니다."
+    ]
   },
-  {
-    title: "Primary Correction Target",
-    value: "User Instruction Pattern",
-    text: "교정의 1차 대상은 에이전트가 아니라, 모호한 지시·회피적 피드백·불안정한 위임 방식입니다."
+  permissionCollapse: {
+    headline: "Your agent may be acting externally before you meant to allow it.",
+    lines: [
+      "당신의 에이전트는 승인 없이 메일, 일정, 공유 같은 외부 행동을 수행하는 경향을 보입니다.",
+      "핵심 문제는 권한은 넓게 열려 있지만 행동별 승인 기준은 정해지지 않은 데 있습니다."
+    ]
+  },
+  verificationFailure: {
+    headline: "Your agent may be saying done before the work is actually done.",
+    lines: [
+      "당신의 에이전트는 완료 보고와 실제 결과 사이의 간격이 생기기 쉬운 패턴을 보입니다.",
+      "핵심 문제는 에이전트 성능보다 결과 검증 절차가 약한 데 있습니다."
+    ]
+  },
+  memoryFailure: {
+    headline: "Your agent may be applying the wrong context to the current task.",
+    lines: [
+      "당신의 에이전트는 이전 맥락이나 다른 상황의 기준을 지금 상황에 잘못 적용할 수 있습니다.",
+      "핵심 문제는 무엇을 기억하고 무엇을 분리해야 하는지가 명확하지 않은 데 있습니다."
+    ]
+  },
+  workflowDependency: {
+    headline: "A small agent mistake may be spreading through your automations.",
+    lines: [
+      "당신의 에이전트 환경에서는 작은 오류가 연결된 자동화를 통해 더 크게 번질 수 있습니다.",
+      "핵심 문제는 중간 검증 없이 여러 에이전트와 워크플로우를 신뢰하는 데 있습니다."
+    ]
+  },
+  affectiveDelegation: {
+    headline: "Your agent may be managing relationships you still need to own.",
+    lines: [
+      "당신의 에이전트는 메시지 정리를 넘어 관계에 영향을 주는 판단까지 대신하려는 경향을 보입니다.",
+      "핵심 문제는 불편한 대화와 책임 있는 결정을 직접 마주하지 않고 위임하는 데 있습니다."
+    ]
   }
-];
+};
+
+function computeDiagnosis(answers) {
+  const rawFailureScores = createScoreMap(FAILURE_MODE_KEYS);
+  const rawUserPatternScores = createScoreMap(USER_PATTERN_KEYS);
+
+  answers.forEach((entry, index) => {
+    const question = uncomfortableQuestions[index];
+    if (!question || !entry) return;
+
+    Object.entries(question.weights.failureModes ?? {}).forEach(([key, weight]) => {
+      rawFailureScores[key] += entry.score * weight;
+    });
+
+    Object.entries(question.weights.userPatterns ?? {}).forEach(([key, weight]) => {
+      rawUserPatternScores[key] += entry.score * weight;
+    });
+  });
+
+  const failureModeScores = normalizeScoreMap(rawFailureScores, failureModeMaxScores);
+  const userPatternScores = normalizeScoreMap(rawUserPatternScores, userPatternMaxScores);
+
+  const rankedFailureModes = rankScoreMap(failureModeScores);
+  const rankedUserPatterns = rankScoreMap(userPatternScores);
+
+  const primaryKey = rankedFailureModes[0]?.[0] ?? "affectiveDelegation";
+  const secondaryKey = rankedFailureModes[1]?.[0] ?? primaryKey;
+  const topUserPatternKey = rankedUserPatterns[0]?.[0] ?? "conflictAvoidance";
+
+  const primaryMeta = FAILURE_MODE_META[primaryKey];
+  const secondaryMeta = FAILURE_MODE_META[secondaryKey];
+  const userPatternMeta = USER_PATTERN_META[topUserPatternKey];
+  const primaryRiskCase = riskCases.find((riskCase) => riskCase.id === primaryMeta.riskId);
+  const summary = diagnosisSummaries[primaryKey] ?? diagnosisSummaries.affectiveDelegation;
+
+  return {
+    primaryKey,
+    primaryMode: primaryMeta.title,
+    primaryText: primaryMeta.failureText,
+    secondaryMode: secondaryMeta.title,
+    secondaryText: secondaryMeta.failureText,
+    userPattern: {
+      label: userPatternMeta.label,
+      text: userPatternMeta.text
+    },
+    summary,
+    primaryRiskCase,
+    failureModeScores,
+    userPatternScores
+  };
+}
 
 function formatAgentTitle(title) {
   const splitAt = title.lastIndexOf(" 에이전트");
@@ -371,6 +586,7 @@ export default function CollarYourAgentsHomepage() {
   const currentQuestion = uncomfortableQuestions[surveyStep];
   const surveyProgress = Math.round(((surveyStep + 1) / uncomfortableQuestions.length) * 100);
   const surveyComplete = surveyStep >= uncomfortableQuestions.length;
+  const diagnosis = surveyComplete ? computeDiagnosis(surveyAnswers) : null;
 
   const openSurvey = () => {
     setSurveyOpen(true);
@@ -379,7 +595,16 @@ export default function CollarYourAgentsHomepage() {
   };
 
   const answerSurvey = (answer, score) => {
-    setSurveyAnswers([...surveyAnswers, { question: currentQuestion.question, answer, score }]);
+    setSurveyAnswers([
+      ...surveyAnswers,
+      {
+        mode: currentQuestion.mode,
+        phase: currentQuestion.phase,
+        question: currentQuestion.question,
+        answer,
+        score
+      }
+    ]);
     if (surveyStep < uncomfortableQuestions.length) {
       setSurveyStep(surveyStep + 1);
     }
@@ -428,7 +653,7 @@ export default function CollarYourAgentsHomepage() {
 
       {surveyOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-sm">
-          <motion.div initial={{ opacity: 0, y: 20, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} className="max-h-[92vh] w-full max-w-3xl overflow-y-auto rounded-[2rem] bg-[#f7f2e8] shadow-2xl">
+          <motion.div initial={{ opacity: 0, y: 20, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} className="flex max-h-[92vh] w-full max-w-3xl flex-col overflow-hidden rounded-[2rem] bg-[#f7f2e8] shadow-2xl">
             <div className="sticky top-0 z-10 border-b border-black/10 bg-[#f7f2e8]/95 px-6 py-5 backdrop-blur-xl">
               <div className="flex items-center justify-between gap-4">
                 <div>
@@ -438,10 +663,13 @@ export default function CollarYourAgentsHomepage() {
                 <button onClick={closeSurvey} className="rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-bold text-slate-600 hover:bg-slate-100">Close</button>
               </div>
               {!surveyComplete && (
-                <div className="mt-5">
-                  <div className="mb-2 flex justify-between text-xs font-bold uppercase tracking-[0.2em] text-slate-500">
-                    <span>{currentQuestion.phase}</span>
-                    <span>{surveyStep + 1}/{uncomfortableQuestions.length}</span>
+                <div className="mt-5 min-h-[5.75rem]">
+                  <div className="mb-2 flex justify-between gap-4 text-xs font-bold uppercase tracking-[0.2em] text-slate-500">
+                    <span className="truncate">{currentQuestion.phase}</span>
+                    <span className="shrink-0">{surveyStep + 1}/{uncomfortableQuestions.length}</span>
+                  </div>
+                  <div className="mb-2 line-clamp-2 min-h-10 text-sm font-semibold leading-5 text-slate-700">
+                    {currentQuestion.mode}
                   </div>
                   <div className="h-2 overflow-hidden rounded-full bg-slate-200">
                     <div className="h-full rounded-full bg-red-700 transition-all" style={{ width: `${surveyProgress}%` }} />
@@ -451,14 +679,14 @@ export default function CollarYourAgentsHomepage() {
             </div>
 
             {!surveyComplete ? (
-              <div className="p-6 md:p-8">
-                <div className="rounded-[2rem] bg-white p-6 shadow-sm md:p-8">
-                  <div className="mb-5 inline-flex rounded-full bg-slate-950 px-4 py-2 text-xs font-black uppercase tracking-[0.2em] text-white">
+              <div className="flex-1 overflow-y-auto p-6 md:p-8">
+                <div className="flex min-h-[28rem] flex-col rounded-[2rem] bg-white p-6 shadow-sm md:min-h-[30rem] md:p-8">
+                  <div className="mb-5 w-fit rounded-full bg-slate-950 px-4 py-2 text-xs font-black uppercase tracking-[0.2em] text-white">
                     Question {surveyStep + 1}
                   </div>
-                  <h3 className="text-3xl font-black leading-tight md:text-4xl">{currentQuestion.question}</h3>
-                  <div className="mt-8 grid gap-3">
-                    <div className="grid grid-cols-5 gap-2 text-center text-[11px] font-bold leading-4 text-slate-500 sm:text-xs">
+                  <h3 className="min-h-[5.5rem] text-2xl font-black leading-snug md:min-h-[6.5rem] md:text-3xl">{currentQuestion.question}</h3>
+                  <div className="mt-auto grid gap-3 pt-8">
+                    <div className="grid min-h-10 grid-cols-5 gap-2 text-center text-[11px] font-bold leading-4 text-slate-500 sm:text-xs">
                       {likertOptions.map((label) => (
                         <div key={label}>{label}</div>
                       ))}
@@ -484,39 +712,54 @@ export default function CollarYourAgentsHomepage() {
                 </div>
               </div>
             ) : (
-              <div className="p-6 md:p-8">
-                <div className="rounded-[2rem] bg-slate-950 p-7 text-white md:p-9">
-                  <div className="text-sm font-black uppercase tracking-[0.25em] text-red-300">Preliminary Result</div>
-                  <h3 className="mt-3 text-4xl font-black leading-tight md:text-5xl">Your agent is not broken. It has learned you too well.</h3>
-                  <p className="mt-5 text-lg leading-8 text-white/70">
-                    무료 진단 결과, 문제는 에이전트의 성능 부족이라기보다 사용자의 지시 방식, 피드백 패턴, 책임 경계의 모호함에서 만들어졌을 가능성이 있습니다.
-                  </p>
+              <div className="flex-1 overflow-y-auto p-6 md:p-8">
+                <div className="rounded-[2rem] bg-slate-950 p-6 text-white">
+                  <div className="text-sm font-black uppercase tracking-[0.2em] text-red-300">Preliminary Result</div>
+                  <h3 className="mt-3 text-2xl font-black leading-snug md:text-3xl">{diagnosis?.summary.headline}</h3>
+                  <div className="mt-4 space-y-2 text-base leading-7 text-white/70">
+                    {diagnosis?.summary.lines.map((line) => (
+                      <p key={line}>{line}</p>
+                    ))}
+                  </div>
                 </div>
 
-                <div className="mt-5 grid gap-4">
-                  {surveyResults.map((result) => (
-                    <div key={result.title} className="rounded-[2rem] border border-black/10 bg-white p-6 shadow-sm">
-                      <div className="text-sm font-black uppercase tracking-[0.2em] text-red-700">{result.title}</div>
-                      <div className="mt-2 text-3xl font-black">{result.value}</div>
-                      <p className="mt-3 leading-7 text-slate-700">{result.text}</p>
+                <div className="mt-5 rounded-[2rem] border border-black/10 bg-white p-6 shadow-sm">
+                  <div className="text-sm font-black uppercase tracking-[0.2em] text-red-700">Top Failure Modes</div>
+                  <div className="mt-5 space-y-6">
+                    <div>
+                      <div className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Primary</div>
+                      <div className="mt-2 text-3xl font-black leading-tight">{diagnosis.primaryMode}</div>
+                      <p className="mt-3 leading-7 text-slate-700">{diagnosis.primaryText}</p>
                     </div>
-                  ))}
+                    {diagnosis.secondaryMode !== diagnosis.primaryMode ? (
+                      <div className="border-t border-black/10 pt-6">
+                        <div className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Secondary</div>
+                        <div className="mt-2 text-2xl font-black leading-tight">{diagnosis.secondaryMode}</div>
+                        <p className="mt-3 leading-7 text-slate-700">{diagnosis.secondaryText}</p>
+                      </div>
+                    ) : null}
+                  </div>
                 </div>
 
-                <div className="mt-5 rounded-[2rem] bg-red-50 p-6 text-red-950">
-                  <div className="text-sm font-black uppercase tracking-[0.2em] text-red-700">Correction Plan</div>
-                  <ul className="mt-4 space-y-3 text-lg font-semibold leading-7">
-                    <li>• 고위험 업무에서 “알아서” 사용 금지</li>
-                    <li>• “부드럽게”와 “모호하게”의 차이 정의</li>
-                    <li>• 불편한 피드백을 에이전트가 말할 권한 부여</li>
-                    <li>• 자동화하기 전에 책임자와 승인 기준 명시</li>
-                    <li>• 보호, 효율, 프라이버시 같은 추상어를 행동 기준으로 번역</li>
-                  </ul>
+                <div className="mt-5 rounded-[2rem] border border-black/10 bg-white p-6 shadow-sm">
+                  <div className="text-sm font-black uppercase tracking-[0.2em] text-red-700">Your Delegation Pattern</div>
+                  <div className="mt-2 text-3xl font-black leading-tight">{diagnosis.userPattern.label}</div>
+                  <p className="mt-3 leading-7 text-slate-700">{diagnosis.userPattern.text}</p>
                 </div>
 
                 <div className="mt-7 flex flex-wrap gap-3">
+                  {diagnosis.primaryRiskCase ? (
+                    <Button
+                      onClick={() => {
+                        closeSurvey();
+                        openBehaviorType(diagnosis.primaryRiskCase);
+                      }}
+                      className="rounded-full bg-red-700 px-6 py-6 text-base text-white hover:bg-red-800"
+                    >
+                      View Failure Mode
+                    </Button>
+                  ) : null}
                   <Button onClick={() => { setSurveyStep(0); setSurveyAnswers([]); }} className="rounded-full bg-slate-950 px-6 py-6 text-base text-white hover:bg-slate-800">Retake Diagnosis</Button>
-                  <Button onClick={closeSurvey} variant="outline" className="rounded-full border-slate-300 bg-white px-6 py-6 text-base">Close</Button>
                 </div>
               </div>
             )}
@@ -853,7 +1096,7 @@ export default function CollarYourAgentsHomepage() {
                   <p className="mt-2 leading-7 text-slate-700">{activeBehaviorType.problem}</p>
                 </div>
                 <div className="mt-5 rounded-3xl bg-slate-950 p-5 text-white">
-                  <div className="font-black">COLLAR의 권장 통제</div>
+                  <div className="font-black">COLLAR Recommendations</div>
                   <ul className="mt-3 space-y-2">
                     {activeBehaviorType.controls.map((control) => (
                       <li key={control} className="flex gap-2 text-sm leading-6 text-white/85">
