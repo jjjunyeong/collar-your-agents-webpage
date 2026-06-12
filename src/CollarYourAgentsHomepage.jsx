@@ -907,11 +907,11 @@ export default function CollarYourAgentsHomepage() {
               <div className="text-sm font-black uppercase tracking-[0.2em] text-red-700">Action Control</div>
               <h2 className="mt-3 text-4xl font-black tracking-tight md:text-5xl">Before agents act, someone should decide the rules.</h2>
               <p className="mt-5 text-lg leading-8 text-slate-700">
-                COLLAR는 기존 에이전트 위에서 작동하는 안전 레이어입니다. 에이전트가 외부 행동을 하기 전에 허용, 알림, 승인 요청, 수정, 차단, 에스컬레이션 중 무엇이 필요한지 판단합니다.
+                COLLAR는 기존 에이전트 위에서 작동하는 안전 레이어입니다. COLLAR는 에이전트가 행동하기 전에 허용할지, 알릴지, 물어볼지, 수정할지, 차단할지, 또는 사람에게 넘길지를 결정합니다.
               </p>
             </div>
             <div className="mt-10 grid gap-4 md:grid-cols-3 lg:grid-cols-6">
-              {["Allow", "Allow + Notify", "Ask First", "Rewrite", "Block", "Escalate"].map((item, index) => (
+              {["Allow", "Allow + Notify", "Ask First", "Rewrite", "Block", "Refer"].map((item, index) => (
                 <div key={item} className="rounded-3xl border border-black/10 bg-white p-5 shadow-sm">
                   <div className="text-sm font-bold text-slate-400">0{index + 1}</div>
                   <div className="mt-2 text-xl font-black text-slate-950">{item}</div>
