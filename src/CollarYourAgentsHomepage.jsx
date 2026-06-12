@@ -1164,7 +1164,7 @@ export default function CollarYourAgentsHomepage() {
             <button type="button" className="cursor-pointer bg-transparent p-0 text-inherit hover:text-slate-950">Privacy</button>
             <button type="button" className="cursor-pointer bg-transparent p-0 text-inherit hover:text-slate-950">Terms</button>
           </div>
-          <p className="text-sm text-slate-400">© 2030 COLLAR YOUR AGENTS, Inc.</p>
+          <p className="text-sm text-slate-400">© 2031 COLLAR YOUR AGENTS, Inc.</p>
         </div>
       </footer>
     </div>
