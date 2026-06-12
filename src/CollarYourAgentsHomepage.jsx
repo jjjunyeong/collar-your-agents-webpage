@@ -1076,7 +1076,7 @@ export default function CollarYourAgentsHomepage() {
                       <span className="text-4xl">{activeBehaviorType.emoji}</span>
                       <div className="text-sm font-black tracking-[0.05em] text-slate-500">행동 유형</div>
                     </div>
-                    <h3 className="mt-4 text-2xl font-black leading-tight tracking-tight break-keep md:text-3xl">{formatAgentTitle(activeBehaviorType.title)}</h3>
+                    <h3 className="mt-4 text-2xl font-black leading-tight tracking-tight md:text-3xl">{activeBehaviorType.title}</h3>
                     <p className="mt-3 text-lg leading-8 text-slate-700">{activeBehaviorType.definition}</p>
                   </div>
                   <button
