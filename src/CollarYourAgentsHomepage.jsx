@@ -158,37 +158,37 @@ const popularSolutions = [
     icon: MailCheck,
     title: "Approval Gate",
     text: "이메일, DM, Slack, 문자, 고객 메시지가 외부로 나가기 전에 위험 표현과 승인 필요 여부를 확인합니다.",
-    image: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop&w=900&q=80"
+    image: "https://images.unsplash.com/photo-1611746869696-d09bce200020?auto=format&fit=crop&w=900&q=80"
   },
   {
     icon: ShieldAlert,
     title: "Data Sharing Alert",
     text: "개인정보, 회사 문서, 의료·금융·고객 정보가 외부로 공유되기 전 감지하고 차단하거나 승인 요청합니다.",
-    image: "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=900&q=80"
+    image: "https://images.unsplash.com/photo-1616012480717-fd9867059ca0?auto=format&fit=crop&w=900&q=80"
   },
   {
     icon: CalendarCheck,
     title: "Calendar Control",
     text: "에이전트가 일정 후보는 제안하되, 고객 미팅·병원 예약·가족 일정은 승인 없이 확정하지 못하게 합니다.",
-    image: "https://images.unsplash.com/photo-1611224923853-80b023f02d71?auto=format&fit=crop&w=900&q=80"
+    image: "https://images.unsplash.com/photo-1633526543814-9718c8922b7a?auto=format&fit=crop&w=900&q=80"
   },
   {
     icon: MessageSquareWarning,
     title: "Conversation Checker",
     text: "해고, 계약 종료, 이별, 거절, 환불 거절처럼 명확해야 하는 메시지가 너무 모호하지 않은지 검사합니다.",
-    image: "https://images.unsplash.com/photo-1577563908411-5077b6dc7624?auto=format&fit=crop&w=900&q=80"
+    image: "https://images.unsplash.com/photo-1662974770404-468fd9660389?auto=format&fit=crop&w=900&q=80"
   },
   {
     icon: WalletCards,
     title: "Fraud Protection",
     text: "노부모의 의심 송금, 가족 사칭 메시지, 이상 결제, 피싱 링크를 감지하고 고위험 상황에서 보호자 확인을 요청합니다.",
-    image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=900&q=80"
+    image: "https://images.unsplash.com/photo-1674049405160-9b800f5645f5?auto=format&fit=crop&w=900&q=80"
   },
   {
     icon: RotateCcw,
     title: "Incident Recovery",
     text: "이미 잘못 보낸 메시지, 잘못 잡은 일정, 잘못 공유한 문서를 수습하고 재발 방지 규칙을 설정합니다.",
-    image: "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=900&q=80"
+    image: "https://images.unsplash.com/photo-1578986568309-707ef1017f69?auto=format&fit=crop&w=900&q=80"
   }
 ];
 
@@ -348,6 +348,19 @@ const surveyResults = [
     text: "교정의 1차 대상은 에이전트가 아니라, 모호한 지시·회피적 피드백·불안정한 위임 방식입니다."
   }
 ];
+
+function formatAgentTitle(title) {
+  const splitAt = title.lastIndexOf(" 에이전트");
+  if (splitAt === -1) return title;
+
+  return (
+    <>
+      {title.slice(0, splitAt)}
+      <br />
+      에이전트
+    </>
+  );
+}
 
 export default function CollarYourAgentsHomepage() {
   const [surveyOpen, setSurveyOpen] = useState(false);
@@ -636,7 +649,7 @@ export default function CollarYourAgentsHomepage() {
                   className="group flex w-[220px] shrink-0 snap-start flex-col items-start rounded-[1.5rem] border border-black/10 bg-white p-5 text-left shadow-sm transition hover:-translate-y-1 hover:border-slate-300 hover:shadow-lg sm:w-[240px]"
                 >
                   <span className="text-4xl">{c.emoji}</span>
-                  <h3 className="mt-4 text-base font-black leading-snug">{c.title}</h3>
+                  <h3 className="mt-4 text-base font-black leading-snug break-keep">{formatAgentTitle(c.title)}</h3>
                   <span className="mt-3 text-xs font-bold tracking-[0.05em] text-slate-400 group-hover:text-red-700">자세히 보기 →</span>
                 </button>
               ))}
@@ -820,7 +833,7 @@ export default function CollarYourAgentsHomepage() {
                       <span className="text-4xl">{activeBehaviorType.emoji}</span>
                       <div className="text-sm font-black tracking-[0.05em] text-slate-500">행동 유형</div>
                     </div>
-                    <h3 className="mt-4 text-2xl font-black leading-tight tracking-tight md:text-3xl">{activeBehaviorType.title}</h3>
+                    <h3 className="mt-4 text-2xl font-black leading-tight tracking-tight break-keep md:text-3xl">{formatAgentTitle(activeBehaviorType.title)}</h3>
                     <p className="mt-3 text-lg leading-8 text-slate-700">{activeBehaviorType.definition}</p>
                   </div>
                   <button
