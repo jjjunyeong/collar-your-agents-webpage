@@ -98,7 +98,7 @@ const riskCases = [
   {
     id: "affective-relational",
     emoji: "💬",
-    title: "내 대신 관계를 관리하는 에이전트",
+    title: "나 대신 관계를 관리하는 에이전트",
     definition: "사과, 거절, 갈등 해결 같은 인간관계 영역까지 대신 처리하려고 합니다.",
     icon: HeartHandshake,
     color: "from-pink-100 to-rose-50",
@@ -299,7 +299,7 @@ const FAILURE_MODE_META = {
       "하나의 작은 오류가 다른 에이전트와 자동화 과정으로 이어져 문제가 커지는 경향이 감지됩니다."
   },
   affectiveDelegation: {
-    title: "내 대신 관계를 관리하는 에이전트",
+    title: "나 대신 관계를 관리하는 에이전트",
     riskId: "affective-relational",
     failureText:
       "에이전트가 단순히 메시지를 다듬는 수준을 넘어, 사용자의 감정적 부담이나 인간관계 판단까지 대신 처리하려는 경향이 감지됩니다."
